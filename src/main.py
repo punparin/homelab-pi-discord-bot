@@ -51,5 +51,26 @@ async def reboot(ctx: SlashContext, target: str):
     await ctx.send(embeds=[embed])
     clusterController.reboot(target)
 
+@slash.slash(
+    name="shutdown",
+    description="Shudown Pi cluster or node",
+    guild_ids=[guild_id],
+    options=[
+        create_option(
+            name="target",
+            description="Select a target to shutdown",
+            option_type=3,
+            required=True,
+            choices=get_discord_choices()
+            )
+        ])
+async def shutdown(ctx: SlashContext, target: str):
+    if ctx.channel_id != channel_id:
+        return
+    embed = Embed(title=target, description="Sucessfully triggered shutdown" ,color=0xE89332)
+    await ctx.send(embeds=[embed])
+    clusterController.shutdown(target)
+
+
 if __name__ == "__main__":
     bot.run(discord_token)
