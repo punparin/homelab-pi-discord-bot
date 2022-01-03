@@ -22,26 +22,31 @@ class ClusterInformer:
         return nodes_info
 
     def get_nodes_embeds(self):
-        embeds = []
-        nodes_info = self.get_nodes_info()
-        for node_info in nodes_info:
-            embed = Embed(title=node_info["name"], color=0x00A300)
-            embed.add_field(name="CPU", value="Temperature: {0}°C\nUsage: {1}%".format(
-                node_info["cpu_temp"],
-                node_info["cpu_percent"]
+        try:
+            embeds = []
+            nodes_info = self.get_nodes_info()
+            for node_info in nodes_info:
+                embed = Embed(title=node_info["name"], color=0x00A300)
+                embed.add_field(name="CPU", value="Temperature: {0}°C\nUsage: {1}%".format(
+                    node_info["cpu_temp"],
+                    node_info["cpu_percent"]
+                    )
                 )
-            )
-            embed.add_field(name="Memory", value="Usage: {0} GB / {1} GB ({2}%)".format(
-                node_info["memory_used"],
-                node_info["memory_total"],
-                node_info["memory_percent"]
+                embed.add_field(name="Memory", value="Usage: {0} GB / {1} GB ({2}%)".format(
+                    node_info["memory_used"],
+                    node_info["memory_total"],
+                    node_info["memory_percent"]
+                    )
                 )
-            )
-            embed.add_field(name="Disk", value="Usage: {0} GB / {1} GB ({2}%)".format(
-                node_info["disk_used"],
-                node_info["disk_total"],
-                node_info["disk_percent"]
+                embed.add_field(name="Disk", value="Usage: {0} GB / {1} GB ({2}%)".format(
+                    node_info["disk_used"],
+                    node_info["disk_total"],
+                    node_info["disk_percent"]
+                    )
                 )
-            )
-            embeds.append(embed)
-        return embeds
+                embeds.append(embed)
+            return embeds
+        except requests.exceptions.ConnectionError as err:
+            return [Embed(title="Connection Error", description=err, color=0xE4443A)]
+        except Exception as err:
+            return [Embed(title="Unknown Error", description=err, color=0xE4443A)]
