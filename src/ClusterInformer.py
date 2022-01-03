@@ -1,27 +1,21 @@
 import os
-import json
 import requests
 from discord import Embed
+from Utils import *
 
 class ClusterInformer:
     def __init__(self):
-        self.node_status_endpoints = self.get_node_status_endpoints()
-
-    def get_node_status_endpoints(self):
-        with open("config.json", encoding = 'utf-8') as f:
-            data = json.load(f)
-            f.close()
-            return data
+        self.node_ips = get_node_ips()
 
     def get_node_info(self, node_ip):
-        r = requests.get('http://' + node_ip + '/api/stats')
+        r = requests.get('http://' + node_ip + ':3000/api/stats')
         result = r.json()
         return result
 
     def get_nodes_info(self):
         nodes_info = []
-        for node_name in self.node_status_endpoints:
-            node_ip = self.node_status_endpoints[node_name]
+        for node_name in self.node_ips:
+            node_ip = self.node_ips[node_name]
             node_info = self.get_node_info(node_ip)
             node_info["name"] = node_name
             nodes_info.append(node_info)
